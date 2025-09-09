@@ -1,0 +1,28 @@
+name: Update LinkedIn RSS Feed
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Runs every Sunday at midnight UTC
+  workflow_dispatch:     # Allows manual trigger
+
+jobs:
+  fetch-feed:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Fetch latest LinkedIn RSS
+        run: |
+          curl -s 'https://www.linkedin.com/company/hisi-inc/' -o linkedin.html
+          # Here you can use your script or tool to parse LinkedIn page into RSS
+          # For now, this is just a placeholder
+
+      - name: Commit and push feed
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add feed.xml
+          git commit -m "Update LinkedIn RSS feed" || echo "No changes"
+          git push
